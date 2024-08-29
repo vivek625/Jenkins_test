@@ -1,17 +1,21 @@
 <?php
+session_start();
 
-// Comment these lines to hide errors
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// Check if the user is logged in
+if (!isset($_SESSION['loggedin']) || !$_SESSION['loggedin']) {
+    header('Location: login.php');
+    exit();
+}
+
+// Logout logic
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: login.php');
+    exit();
+}
 
 // Code maintained by Vivek
 
-require 'includes/config.php';
-require 'includes/functions.php';
-
-// Print name for debugging or display purposes
-echo "Developed by Vivek";
-echo "Jai shree ram";
-echo "Ram Ram";
-init();
+echo "Welcome, you are logged in!";
+echo '<br><a href="?logout">Logout</a>';
 
