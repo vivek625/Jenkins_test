@@ -11,6 +11,7 @@ require 'includes/functions.php';
 
 // Print name for debugging or display purposes
 echo "Developed by Vivek";
-
+echo "Jai shree ram";
+echo "Ram Ram";
 init();
 
