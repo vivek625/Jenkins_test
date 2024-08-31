@@ -1,14 +1,20 @@
 <?php
 session_start();
+include 'db_config.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['loggedin']) || !$_SESSION['loggedin']) {
-    header('Location: index.php');
+    echo "You must be logged in to view this page.";
+    echo '<br><a href="index.php">Go to Login</a>';
     exit();
 }
 
-// Include the database configuration file
-include 'db_config.php';
+// Logout logic
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: index.php'); // Redirect to login page
+    exit();
+}
 
 // Query to fetch user data
 $user_id = $_SESSION['user_id'];
@@ -20,8 +26,8 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
-    $username = $row['username'];
-    $email = $row['email'];
+    $username = htmlspecialchars($row['username']);
+    $email = htmlspecialchars($row['email']);
 } else {
     $username = 'Unknown User';
     $email = 'Unknown Email';
@@ -37,18 +43,9 @@ $conn->close();
     <title>Dashboard</title>
 </head>
 <body>
-    <h2>Welcome, <?php echo htmlspecialchars($username); ?>!</h2>
-    <p>Your email: <?php echo htmlspecialchars($email); ?></p>
+    <h2>Welcome, <?php echo $username; ?>!</h2>
+    <p>Your email: <?php echo $email; ?></p>
     <a href="?logout">Logout</a>
-
-    <?php
-    // Logout logic
-    if (isset($_GET['logout'])) {
-        session_destroy();
-        header('Location: index.php');
-        exit();
-    }
-    ?>
 </body>
 </html>
 
