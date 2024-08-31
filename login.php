@@ -1,53 +1,50 @@
 <?php
-// Comment these lines to hide errors
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Code maintained by Vivek
-
-// Start the session
 session_start();
+include 'db_config.php'; // Make sure this file contains your database connection setup
 
-// Define your username and password here
-$valid_username = 'admin';
-$valid_password = 'password13';
+// Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
+    // Prepare and execute the SQL query
+    $sql = "SELECT id, password FROM users WHERE username = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->store_result();
+    
+    if ($stmt->num_rows > 0) {
+        $stmt->bind_result($user_id, $hashed_password);
+        $stmt->fetch();
 
-    if ($username === $valid_username && $password === $valid_password) {
-        // Set session variable
-        $_SESSION['loggedin'] = true;
-        header('Location: index.php'); // Redirect to main page
-        exit();
+        // Verify password
+        if (password_verify($password, $hashed_password)) {
+            $_SESSION['loggedin'] = true;
+            $_SESSION['user_id'] = $user_id;
+            header('Location: dashboard.php'); // Redirect to dashboard
+            exit();
+        } else {
+            $error = "Invalid username or password.";
+        }
     } else {
-        $error_message = 'Invalid username or password.';
+        $error = "Invalid username or password.";
     }
+
+    $stmt->close();
+    $conn->close();
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Login Error</title>
 </head>
 <body>
-    <h2>Login</h2>
-    <?php if (isset($error_message)): ?>
-        <p style="color: red;"><?php echo $error_message; ?></p>
-    <?php endif; ?>
-    <form method="post" action="">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">Login</button>
-    </form>
+    <h2>Login Error</h2>
+    <?php if (isset($error)) echo "<p>$error</p>"; ?>
+    <a href="index.php">Back to Login</a>
 </body>
 </html>
 
