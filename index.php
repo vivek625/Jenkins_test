@@ -16,6 +16,6 @@ if (isset($_GET['logout'])) {
 
 // Code maintained by Vivek
 
-echo "Welcome, you are logged in! Vivek";
+echo "Welcome, you are logged in! Vivek Raj Singh ";
 echo '<br><a href="?logout">Logout</a>';
 
