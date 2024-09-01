@@ -7,9 +7,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
+    // Validate input
+    if (empty($username) || empty($password)) {
+        header('Location: index.php?error=Please fill in both fields');
+        exit();
+    }
+
     // Prepare and execute the SQL query
     $sql = "SELECT id, password FROM users WHERE username = ?";
     $stmt = $conn->prepare($sql);
+
+    if ($stmt === false) {
+        die('MySQL prepare error: ' . $conn->error);
+    }
+
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->store_result();
@@ -25,26 +36,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header('Location: dashboard.php'); // Redirect to dashboard
             exit();
         } else {
-            $error = "Invalid username or password.";
+            header('Location: index.php?error=Invalid username or password');
+            exit();
         }
     } else {
-        $error = "Invalid username or password.";
+        header('Location: index.php?error=Invalid username or password');
+        exit();
     }
 
     $stmt->close();
     $conn->close();
+} else {
+    // Redirect to login page if the request method is not POST
+    header('Location: index.php');
+    exit();
 }
-?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login Error</title>
-</head>
-<body>
-    <h2>Login Error</h2>
-    <?php if (isset($error)) echo "<p>$error</p>"; ?>
-    <a href="index.php">Back to Login</a>
-</body>
-</html>
 

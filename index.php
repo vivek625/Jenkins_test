@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-// Redirect to dashboard if already logged in
+// Check if user is already logged in
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin']) {
-    header('Location: dashboard.php');
+    header('Location: dashboard.php'); // Redirect to dashboard if already logged in
     exit();
 }
 ?>

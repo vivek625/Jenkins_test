@@ -1,7 +1,7 @@
 <?php
-$servername = "3.110.49.140";
+$servername = "3.108.237.74";
 $username = "root";
-$password = "password"; // Replace with your actual password
+$password = "your_password"; // Replace with the actual password
 $database = "my_database"; // Replace with your database name
 
 // Create connection using mysqli
@@ -12,3 +12,4 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 ?>
+

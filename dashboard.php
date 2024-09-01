@@ -1,5 +1,7 @@
 <?php
 session_start();
+
+// Include the database configuration file
 include 'db_config.php';
 
 // Check if the user is logged in
@@ -26,8 +28,8 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
-    $username = htmlspecialchars($row['username']);
-    $email = htmlspecialchars($row['email']);
+    $username = $row['username'];
+    $email = $row['email'];
 } else {
     $username = 'Unknown User';
     $email = 'Unknown Email';
@@ -43,8 +45,8 @@ $conn->close();
     <title>Dashboard</title>
 </head>
 <body>
-    <h2>Welcome, <?php echo $username; ?>!</h2>
-    <p>Your email: <?php echo $email; ?></p>
+    <h2>Welcome, <?php echo htmlspecialchars($username); ?>!</h2>
+    <p>Your email: <?php echo htmlspecialchars($email); ?></p>
     <a href="?logout">Logout</a>
 </body>
 </html>
